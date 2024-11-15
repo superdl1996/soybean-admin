@@ -214,6 +214,16 @@ export const generatedRoutes: GeneratedRoute[] = [
     ]
   },
   {
+    name: 'generator',
+    path: '/generator',
+    component: 'layout.base$view.generator',
+    meta: {
+      title: 'generator',
+      i18nKey: 'route.generator',
+      icon: 'ic:baseline-auto-awesome'
+    }
+  },
+  {
     name: 'home',
     path: '/home',
     component: 'layout.base$view.home',

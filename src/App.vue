@@ -2,9 +2,16 @@
 import { computed } from 'vue';
 import { NConfigProvider, darkTheme } from 'naive-ui';
 import type { WatermarkProps } from 'naive-ui';
+import hljs from 'highlight.js/lib/core';
+import typescript from 'highlight.js/lib/languages/typescript';
+import xml from 'highlight.js/lib/languages/xml';
 import { useAppStore } from './store/modules/app';
 import { useThemeStore } from './store/modules/theme';
 import { naiveDateLocales, naiveLocales } from './locales/naive';
+// import 'highlight.js/styles/github.min.css';
+
+hljs.registerLanguage('typescript', typescript);
+hljs.registerLanguage('xml', xml);
 
 defineOptions({
   name: 'App'
@@ -46,6 +53,7 @@ const watermarkProps = computed<WatermarkProps>(() => {
     :theme-overrides="themeStore.naiveTheme"
     :locale="naiveLocale"
     :date-locale="naiveDateLocale"
+    :hljs="hljs"
     class="h-full"
   >
     <AppProvider>

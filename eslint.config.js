@@ -18,7 +18,9 @@ export default defineConfig(
           ignores: ['/^icon-/']
         }
       ],
-      'unocss/order-attributify': 'off'
+      'unocss/order-attributify': 'off',
+      'vue/no-unused-refs': 'off',
+      'no-plusplus': 'off'
     }
   }
 );

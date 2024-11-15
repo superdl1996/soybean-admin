@@ -48,6 +48,7 @@ declare module "@elegant-router/types" {
     "function_super-page": "/function/super-page";
     "function_tab": "/function/tab";
     "function_toggle-auth": "/function/toggle-auth";
+    "generator": "/generator";
     "home": "/home";
     "iframe-page": "/iframe-page/:url";
     "login": "/login/:module(pwd-login|code-login|register|reset-pwd|bind-wechat)?";
@@ -137,6 +138,7 @@ declare module "@elegant-router/types" {
     | "about"
     | "alova"
     | "function"
+    | "generator"
     | "home"
     | "iframe-page"
     | "login"
@@ -179,6 +181,7 @@ declare module "@elegant-router/types" {
     | "function_super-page"
     | "function_tab"
     | "function_toggle-auth"
+    | "generator"
     | "home"
     | "manage_menu"
     | "manage_role"

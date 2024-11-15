@@ -210,7 +210,8 @@ function handleClickMask() {
       </main>
 
       <!-- Footer -->
-      <template v-if="showFooter">
+      <!-- <template v-if="showFooter"> -->
+      <template v-if="false">
         <footer
           v-show="!fullContent"
           class="flex-shrink-0"
