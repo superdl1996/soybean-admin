@@ -43,7 +43,12 @@ export default (props: ButtonModalProps) => {
     footer: null,
     noFooter: true,
   };
-  return <BaseModal {...modalProps}></BaseModal>;
+  return (
+    <BaseModal {...modalProps}>
+      <section style={{ height: 700 }}>
+      </section>
+    </BaseModal>
+  );
 };
 `;
 

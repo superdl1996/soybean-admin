@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { type FormModel, checkTsData, getApiData, getModuleExplain } from '../shared';
+import { type FormModel, checkTsData, formatEmptyStr, getApiData, getModuleExplain } from '../shared';
 import { useCopy } from '../hook';
+import { tableTypeMap } from '../gen-form/data';
 
 interface Props {
   formModel: FormModel;
@@ -17,6 +18,8 @@ const code = defineModel<string>('genTypings');
 
 const generateTs = (tsName?: string) => {
   const { listData } = getApiData({ formModel });
+  const isMain = formModel.tableType === tableTypeMap.MAIN;
+  const isSub = formModel.tableType === tableTypeMap.SUB;
   const textArray = checkTsData(formModel);
   let text = '';
   textArray.forEach((type, index) => {
@@ -27,6 +30,27 @@ const generateTs = (tsName?: string) => {
     }
   });
   text = `
+  ${formatEmptyStr(
+    isMain,
+    `/** 主表props */
+export type MainTableProps = {
+  /** 主表当前操作行数据 */
+  mainCurrent: MainTableListItem | undefined;
+  /** 主表操作方法 */
+  setMainCurrent: (params?: MainTableListItem) => void;
+};`
+  )}
+
+${formatEmptyStr(isSub, `import { MainTableListItem } from '../MainTable/typings';`)}
+
+${formatEmptyStr(
+  isSub,
+  `/** 副表props */
+export type SubTableProps = {
+  mainCurrent: MainTableListItem | undefined;
+};`
+)}
+
   /** ${formModel.moduleName} */
   export type ${tsName || listData?.tsName} = {\n${text}}`;
 

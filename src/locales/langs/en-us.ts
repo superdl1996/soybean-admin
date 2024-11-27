@@ -160,6 +160,7 @@ const local: App.I18n.Schema = {
     500: 'Server Error',
     'iframe-page': 'Iframe',
     generator: 'generator',
+    button: 'Common Button',
     home: 'Home',
     document: 'Document',
     document_project: 'Project Document',

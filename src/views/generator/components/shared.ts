@@ -119,7 +119,7 @@ const formatApi = (params: { type?: string; apiUrl: string; formModel: FormModel
     /** ts名字 */
     tsName: getFirstUpperCase(formModel.resetTsName) || `${getFirstUpperCase(nameBefore)}ListItem`,
     /** table key */
-    persistenceKey: formModel.persistenceKey.toUpperCase() || `${nameBefore.toUpperCase()}TABLE`
+    persistenceKey: formModel.persistenceKey.toUpperCase() || `${nameBefore.toUpperCase()}_TABLE`
   };
   return listReturn;
 };

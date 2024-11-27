@@ -88,25 +88,29 @@ const searchParams = reactive<FormModel>({
 });
 
 const requestGenerate = () => {
+  window.$loadingBar?.start();
   request({
-    url: 'http://localhost:3000/generate',
+    // url: 'http://localhost:3000/generate',
+    url: 'https://superdl.top/generate',
     method: 'post',
     responseType: 'blob',
     data: { codeModel, fileName: searchParams.fileName }
-  }).then(res => {
-    const { response } = res;
-    const { data, headers } = response;
-    const filename = headers['content-disposition'].split('filename=')[1];
+  })
+    .then(res => {
+      const { response } = res;
+      const { data, headers } = response;
+      const filename = headers['content-disposition'].split('filename=')[1];
 
-    if (!data) return;
-    const blob = new Blob([data as unknown as Blob], { type: 'application/zip' });
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = filename;
-    link.click();
-    URL.revokeObjectURL(link.href);
-    link.remove();
-  });
+      if (!data) return;
+      const blob = new Blob([data as unknown as Blob], { type: 'application/zip' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = filename;
+      link.click();
+      URL.revokeObjectURL(link.href);
+      link.remove();
+    })
+    .finally(() => window.$loadingBar?.finish());
 };
 
 const submit = () => {

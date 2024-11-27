@@ -96,6 +96,15 @@ export const generatedRoutes: GeneratedRoute[] = [
     ]
   },
   {
+    name: 'button',
+    path: '/button',
+    component: 'layout.base$view.button',
+    meta: {
+      title: 'button',
+      i18nKey: 'route.button'
+    }
+  },
+  {
     name: 'function',
     path: '/function',
     component: 'layout.base',

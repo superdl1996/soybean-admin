@@ -72,7 +72,7 @@ const submitAndDownload = () => {
             <NFormItemGi span="24 s:12 m:6" label="模块名称(中文注释)" path="moduleName" class="pr-20px">
               <NInput v-model:value="model.moduleName" placeholder="用于注释模块名" />
             </NFormItemGi>
-            <NFormItemGi span="24 s:12 m:6" label="模块名称(英文,模块文件名)" path="fileName" class="pr-20px">
+            <NFormItemGi span="24 s:12 m:6" label="模块名称(英文,文件夹名称)" path="fileName" class="pr-20px">
               <NInput v-model:value="model.fileName" placeholder="生成的文件名称" />
             </NFormItemGi>
             <NFormItemGi span="24 s:12 m:6" label="persistenceKey" path="persistenceKey" class="pr-20px">
@@ -105,13 +105,13 @@ const submitAndDownload = () => {
                 placeholder="{{myHost}}/business/assess/queryPageInfo.action"
               />
             </NFormItemGi>
-            <NFormItemGi span="24 s:12 m:6" label="上下移接口路径" path="tableImportApi" class="pr-20px">
+            <NFormItemGi span="24 s:12 m:6" label="导入接口路径" path="tableImportApi" class="pr-20px">
               <NInput
                 v-model:value="model.tableImportApi"
                 placeholder="{{myHost}}/business/assess/queryPageInfo.action"
               />
             </NFormItemGi>
-            <NFormItemGi span="24 s:12 m:6" label="上下移接口路径" path="tableExportApi" class="pr-20px">
+            <NFormItemGi span="24 s:12 m:6" label="导出接口路径" path="tableExportApi" class="pr-20px">
               <NInput
                 v-model:value="model.tableExportApi"
                 placeholder="{{myHost}}/business/assess/queryPageInfo.action"

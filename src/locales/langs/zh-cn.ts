@@ -160,6 +160,7 @@ const local: App.I18n.Schema = {
     500: '服务器错误',
     'iframe-page': '外链页面',
     generator: '代码生成',
+    button: '通用按钮',
     home: '首页',
     document: '文档',
     document_project: '项目文档',

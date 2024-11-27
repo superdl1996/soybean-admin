@@ -58,7 +58,7 @@ const generateCode = () => {
     type Align = 'center' | 'right';
     const genAlignItem = () => {
       const alignItem: { align?: Align } = {};
-      const alignMap = new Map([[['编码', '计量单位', '类型'], 'center']]);
+      const alignMap = new Map([[['计量单位', '类型'], 'center']]);
 
       for (const [keys, align] of alignMap) {
         for (const key of keys) {

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { type FormModel, formatEmptyStr, getApiData, getModuleExplain } from '../shared';
 import { useCopy } from '../hook';
+import { tableTypeMap } from '../gen-form/data';
 
 interface Props {
   formModel: FormModel;
@@ -17,6 +18,9 @@ const code = defineModel<string>('genIndex');
 
 const generateCode = () => {
   const { delData, editData, listData, sortData, importData, exportData } = getApiData({ formModel });
+  const isMain = formModel.tableType === tableTypeMap.MAIN;
+  const isSub = formModel.tableType === tableTypeMap.SUB;
+  const isSplit = isMain || isSub;
 
   const CODE = `
 ${getModuleExplain(formModel)}
@@ -32,12 +36,19 @@ import * as TYPES from './typings';
 import useFormColumns from './useFormColumns';
 import useTableColumns from './useTableColumns';
 
-export default () => {
+export default (${formatEmptyStr(isMain, `props: TYPES.MainTableProps`)}${formatEmptyStr(isSub, `props: TYPES.SubTableProps`)}) => {
+  ${formatEmptyStr(isMain, `const { mainCurrent, setMainCurrent } = props;`)}
+  ${formatEmptyStr(
+    isSub,
+    `const { mainCurrent } = props;
+    const {} = mainCurrent ?? {};`
+  )}
   const { tableColumns } = useTableColumns();
   const { formColumns } = useFormColumns();
   const { auth: authButton } = useAuthButton();
 
-  const [${listData?.currentState.join(',')}] = useState<TYPES.${listData?.tsName}>();
+  ${formatEmptyStr(!isMain && !isSub, `const [${listData?.currentState.join(',')}] = useState<TYPES.${listData?.tsName}>();`)}
+  ${formatEmptyStr(isSub, `const [subCurrent, setSubCurrent] = useState<TYPES.${listData?.tsName}>()`)}
 
   /** 表格操作按钮配置  */
   const toolbar: TableToolbarDefine = {
@@ -86,16 +97,16 @@ export default () => {
     columns: tableColumns,
     columnsDynamic: true,
     columnDigitNilText: '',
-    onActionCurrent: (record) => ${listData?.currentState[1]}(record),
+    onActionCurrent: (record) => ${formatEmptyStr(!isMain && !isSub, `${listData?.currentState[1]}(record)`)}${formatEmptyStr(isMain, `setMainCurrent(record)`)}${formatEmptyStr(isSub, `setSubCurrent(record)`)},
     service: {
       dataSourceRequest:API.${listData?.apiName},
     },
   };
 
   return (
-    <ViewContainer>
+    ${formatEmptyStr(!isSplit, '<ViewContainer>')}
       <BaseTable {...generateTable} />
-    </ViewContainer>
+    ${formatEmptyStr(!isSplit, '</ViewContainer>')}
   );
 };
 `;
