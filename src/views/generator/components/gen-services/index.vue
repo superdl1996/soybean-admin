@@ -75,7 +75,7 @@ ${getFunctionExplain(formModel, 'tableImportApi')}
 ${formatEmptyStr(
   importData,
   `export async function ${importData?.apiName}(data: FETCH.Req) {
-  return request<FETCH.Res>('/excel/basic/historymat/import.action', {
+  return request<FETCH.Res>('${importData?.apiPath}', {
     method: 'POST',
     data,
     requestType: 'form',

@@ -1,10 +1,54 @@
 <script setup lang="ts">
 import { useClipboard } from '@vueuse/core';
+import { computed, ref, watch } from 'vue';
+
+interface FormModelProps {
+  status: number;
+  template: string;
+}
 
 const { copy } = useClipboard();
 
+const statusOptions = ref([
+  {
+    label: 'Button标签',
+    value: 0,
+    template: `<Button className={className}></Button>`
+  },
+  {
+    label: 'className',
+    value: 1,
+    template: `{className}`
+  },
+  {
+    label: 'className="xx"',
+    value: 2,
+    template: `className={className}`
+  }
+]);
+
+const formModel = ref<FormModelProps>({
+  status: 0,
+  template: statusOptions.value[0].template
+});
+
+const computedTemplate = computed((): string => statusOptions.value[formModel.value.status].template);
+
+watch(
+  () => formModel.value.status,
+  () => {
+    formModel.value.template = computedTemplate.value;
+  }
+);
+
 const copyCode = async ({ type, value }: { type: string; value: string }) => {
-  const copyVal = type === 'class' ? `className="${value}"` : value;
+  const reg = /\{([\w]+)\}/;
+
+  const formatTemplate = formModel.value.template.replace(reg, `${value}`);
+  let templateStr = formModel.value.template.replace(reg, `"${value}"`);
+  templateStr = formatTemplate === value ? value : `${templateStr}`;
+  const copyVal = type === 'template' ? `${templateStr}` : value;
+
   await copy(copyVal);
   window.$message?.success(`复制 ${copyVal} 成功`);
 };
@@ -37,7 +81,6 @@ const buttonHollowHoverList = [
   { text: false, class: 'MoveTopButton' },
   { text: false, class: 'MoveDownButton' },
   { text: false, class: 'ant-btn-dangerous' },
-  { text: false, class: 'BorderButtonPrimary' },
   { text: false, class: 'BorderButtonGeekBlue' },
   { text: false, class: 'BorderButtonBlue' },
   { text: false, class: 'BorderButtonCyan' },
@@ -83,24 +126,44 @@ const buttonList = [
 
 <template>
   <div class="btn-wap">
+    <NCard style="margin-bottom: 10px">
+      <NForm ref="formRef" label-placement="left" inline :label-width="80" :model="formModel">
+        <NFormItem label="模板类型" path="status">
+          <NSelect v-model:value="formModel.status" style="width: 160px" :options="statusOptions" />
+        </NFormItem>
+        <NFormItem label="复制模板" path="template">
+          <NInput
+            v-model:value="formModel.template"
+            style="width: 380px"
+            placeholder="请输入模板,会将 {className} 转为要复制的className"
+          />
+        </NFormItem>
+        <NFormItem>
+          <NTag type="primary">
+            <template #icon>
+              <icon-carbon-ai-status-in-progress></icon-carbon-ai-status-in-progress>
+            </template>
+            用于点击复制, 模板的
+            <b>&nbsp;{className}&nbsp;</b>
+            会被替换
+          </NTag>
+        </NFormItem>
+      </NForm>
+    </NCard>
     <NGrid :x-gap="12" :y-gap="8" :cols="1">
       <NGridItem v-for="(item, index) in buttonList" :key="index">
         <NCard :title="item.name">
           <NSpace>
-            <NPopover v-for="(itemChild, indexChild) in item.list" :key="indexChild" trigger="hover">
-              <template #trigger>
-                <NButton
-                  :text="itemChild?.text"
-                  :class="itemChild.class"
-                  @click="copyCode({ type: 'class', value: itemChild.class })"
-                >
-                  按钮
-                </NButton>
-              </template>
-              <NButton @click="copyCode({ type: '', value: itemChild.class })">
-                {{ itemChild.class }}
-              </NButton>
-            </NPopover>
+            <NButton
+              v-for="(itemChild, indexChild) in item.list"
+              :key="indexChild"
+              trigger="hover"
+              :text="itemChild?.text"
+              :class="itemChild.class"
+              @click="copyCode({ type: 'template', value: itemChild.class })"
+            >
+              按钮
+            </NButton>
           </NSpace>
         </NCard>
       </NGridItem>
