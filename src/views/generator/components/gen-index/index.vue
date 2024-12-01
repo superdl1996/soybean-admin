@@ -26,7 +26,7 @@ const generateCode = () => {
 ${getModuleExplain(formModel)}
 
 import { useState } from 'react';
-import ViewContainer from 'jd-framework-web/package/components/ViewContainer';
+${formatEmptyStr(!isSplit, "import ViewContainer from 'jd-framework-web/package/components/ViewContainer';")}
 import BaseTable from 'jd-framework-web/package/components/BaseTable';
 import { BaseTableProps, TableToolbarDefine } from 'jd-framework-web/package/components/BaseTable/typings';
 import useAuthButton from 'jd-framework-web/package/utils/auth/useAuthButton';
