@@ -19,9 +19,14 @@ const generateCode = () => {
   const { listData } = getApiData({ formModel });
   const columnsData = generateTsToColumns(formModel);
   const columnsArray: any[] = columnsData.map(({ title, dataIndex }) => {
+    const otherColumn: { [k: string]: any } = {};
+    if (title.includes('金额') || title.includes('价') || title.includes('量')) {
+      otherColumn.valueType = 'digit';
+    }
     return {
       title,
-      dataIndex
+      dataIndex,
+      ...otherColumn
     };
   });
   columnsArray.unshift({
