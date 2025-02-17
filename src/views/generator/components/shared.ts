@@ -195,8 +195,13 @@ export const checkTsData = (formModel: FormModel) => {
 export const generateTsToColumns = (formModel: FormModel) => {
   const textArray = checkTsData(formModel);
   const result: any[] = [];
+  const typeList = ['boolean', 'string', 'number'].flatMap(curr => [
+    curr,
+    curr.charAt(0).toLocaleUpperCase() + curr.slice(1)
+  ]);
+
   textArray.forEach((item, index) => {
-    if (['boolean', 'string', 'number'].includes(item)) {
+    if (typeList.includes(item)) {
       result.push({
         title: textArray[index + 1],
         dataIndex: textArray[index - 1]

@@ -70,6 +70,14 @@ export default (${formatEmptyStr(isMain, `props: TYPES.MainTableProps`)}${format
       auth: authButton('edit'),
     },`
   )}
+  ${formatEmptyStr(
+    editData,
+    `details: {
+      modalTitle: '查看',
+      columns: formColumns,
+      auth: authButton('details'),
+    },`
+  )}
   ${formatEmptyStr(delData, `deleted: { onSubmit: API.${delData?.apiName}, auth: authButton('deleted') },`)}
   ${formatEmptyStr(sortData, `sort: { onSubmit: API.${sortData?.apiName}, auth: authButton('sort') },`)}
   ${formatEmptyStr(

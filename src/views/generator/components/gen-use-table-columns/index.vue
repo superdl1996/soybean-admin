@@ -18,6 +18,7 @@ const code = defineModel<string>('genUseTableColumns');
 const generateCode = () => {
   const { listData } = getApiData({ formModel });
   const columnsData = generateTsToColumns(formModel);
+
   /** 添加时间筛选 */
   const addColumnsData: any[] = [];
   const columnsArray: any[] = columnsData.map(({ title, dataIndex }) => {
