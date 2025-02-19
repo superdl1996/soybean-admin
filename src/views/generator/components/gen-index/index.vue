@@ -36,7 +36,7 @@ import useAuthButton from 'jd-framework-web/package/utils/auth/useAuthButton';
 
 import * as API from './services';
 import * as TYPES from './typings';
-import useFormColumns from './useFormColumns';
+${formatEmptyStr(!isMainDetails, `import useFormColumns from './useFormColumns';`)}
 import useTableColumns from './useTableColumns';
 ${formatEmptyStr(isMainDetails, `import MainDetails from './MainDetails';`)}
 
@@ -49,7 +49,7 @@ export default (${formatEmptyStr(isMain, `props: TYPES.MainTableProps`)}${format
     const {} = mainCurrent ?? {};`
   )}
   const { tableColumns } = useTableColumns();
-  const { formColumns } = useFormColumns();
+  ${formatEmptyStr(!isMainDetails, ` const { formColumns } = useFormColumns();`)}
   const { auth: authButton } = useAuthButton();
 
   ${formatEmptyStr(!isMain && !isSub, `const [${listData?.currentState.join(',')}] = useState<TYPES.${listData?.tsName}>();`)}

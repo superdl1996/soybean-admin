@@ -1,4 +1,5 @@
 import { createLocalforage, createStorage } from '@sa/utils';
+import type { StorageType } from '@/typings/storage';
 
 const storagePrefix = import.meta.env.VITE_STORAGE_PREFIX || '';
 
