@@ -206,7 +206,7 @@ const getNormalCode = () => {
     const { formColumns } = useMainFormColumns();
 
     /** 操作行数据重置 */
-    const [operateCurrent, setOperateCurrent] = useState<TYPES.ProjectListItem | undefined>(formCurrent);
+    const [operateCurrent, setOperateCurrent] = useState<TYPES.${listData?.tsName} | undefined>(formCurrent);
 
     /** 主单据loading */
     const [saveLoading, setSaveLoading] = useState(false);
