@@ -1,6 +1,10 @@
+<!-- eslint-disable @typescript-eslint/no-shadow -->
+<!-- eslint-disable @typescript-eslint/no-unused-vars -->
 <script setup lang="tsx">
 import { nextTick, reactive, ref, useTemplateRef } from 'vue';
+import type { FormInst } from 'naive-ui';
 import { request } from '@/service/request';
+import { localStg } from '@/utils/storage';
 import GenForm from './components/gen-form/index.vue';
 import GenIndex from './components/gen-index/index.vue';
 import GenServices from './components/gen-services/index.vue';
@@ -9,8 +13,9 @@ import GenUseFormColumns from './components/gen-use-form-columns/index.vue';
 import GenUseTableColumns from './components/gen-use-table-columns/index.vue';
 import GenSplitIndex from './components/gen-split-index/index.vue';
 import GenButtonModalIndex from './components/gen-button-modal-index/index.vue';
+import GenMainDetails from './components/gen-main-details/index.vue';
 import type { FormModel, GenerateAction } from './components/shared';
-import { tableTypeMap } from './components/gen-form/data';
+import { mainDetailList, tableTypeMap } from './components/gen-form/data';
 
 const moduleList = [
   {
@@ -44,6 +49,12 @@ const moduleList = [
     component: GenUseTableColumns
   },
   {
+    name: 'GenMainDetails',
+    tab: 'MainDetails.index.tsx',
+    modelKey: 'gen-main-details',
+    component: GenMainDetails
+  },
+  {
     name: 'GenSplitIndex',
     tab: 'Split.index.tsx',
     modelKey: 'gen-split-index',
@@ -60,6 +71,7 @@ const moduleList = [
 const codeModel = reactive<Record<string, string>>({});
 const tabActiveName = ref('GenIndex');
 const moduleRefs = useTemplateRef<GenerateAction[]>('moduleRefs');
+const genFormRef = useTemplateRef<{ getFormRef: () => FormInst | null }>('genFormRef');
 
 const typeSchema = `productionDeptCode	string	项目主管单位编码
 productionDeptName	string	项目主管单位
@@ -69,7 +81,7 @@ projectType	string	工程类型
 listId	string	无
 completeDate	string	审定日期`;
 
-const searchParams = reactive<FormModel>({
+const searchParams = ref<FormModel>({
   moduleName: '汇总表',
   fileName: 'DefaultTable',
   persistenceKey: '',
@@ -84,17 +96,28 @@ const searchParams = reactive<FormModel>({
   resetTsName: '',
   typeSchema,
   typeSchemaCheck: '',
-  tableType: tableTypeMap.DEFAULT
+  tableType: tableTypeMap.DEFAULT,
+  mainDetailsType: mainDetailList[0].type,
+  commitUrl: ''
 });
+
+const searchParamsLocal = localStg.get('searchParams');
+if (searchParamsLocal) {
+  searchParams.value = { ...searchParams.value, ...searchParamsLocal };
+}
 
 const requestGenerate = () => {
   window.$loadingBar?.start();
+
+  const { GenMainDetails, ...restCodeModel } = codeModel;
+  const genCodeModel = searchParams.value.mainDetailsType === 'none' ? restCodeModel : codeModel;
+
   request({
     // url: 'http://localhost:3000/generate',
     url: 'https://superdl.top/generate',
     method: 'post',
     responseType: 'blob',
-    data: { codeModel, fileName: searchParams.fileName }
+    data: { codeModel: genCodeModel, fileName: searchParams.value.fileName }
   })
     .then(res => {
       const { response } = res;
@@ -113,20 +136,26 @@ const requestGenerate = () => {
     .finally(() => window.$loadingBar?.finish());
 };
 
-const submit = () => {
+const submit = async () => {
   if (!moduleRefs.value) return;
-  for (const item of moduleRefs.value) {
-    item?.generateCode();
-    if (item?.name === tabActiveName.value) {
-      nextTick(() => {
-        item.copyCode();
-      });
+  try {
+    await genFormRef.value?.getFormRef()?.validate();
+    localStg.set('searchParams', searchParams.value);
+    for (const item of moduleRefs.value) {
+      item?.generateCode();
+      if (item?.name === tabActiveName.value) {
+        nextTick(() => {
+          item.copyCode();
+        });
+      }
     }
+  } catch (error) {
+    console.log(error);
   }
 };
 
 const submitAndDownload = async () => {
-  submit();
+  await submit();
   await nextTick();
   requestGenerate();
 };
@@ -145,7 +174,7 @@ const updateValue = (value: string) => {
 
 <template>
   <div class="min-h-500px flex-col-stretch gap-16px overflow-hidden lt-sm:overflow-auto">
-    <GenForm v-model:model="searchParams" @submit="submit" @submit-and-download="submitAndDownload" />
+    <GenForm ref="genFormRef" v-model:model="searchParams" @submit="submit" @submit-and-download="submitAndDownload" />
     <NCard title="" :bordered="false" size="small" content-class="h-100%" class="h-100% overflow-y-hidden card-wrapper">
       <NTabs class="h-100%" pane-wrapper-class="h-100%" type="line" animated @update-value="updateValue">
         <NTabPane

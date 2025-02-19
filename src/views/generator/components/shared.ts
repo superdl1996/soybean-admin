@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import type { MainDetailListType } from './gen-form/data';
 
 // --------------公共模块数组---------------------
 
@@ -52,16 +53,20 @@ export interface FormModel {
   typeSchemaCheck: string;
   /** TS重命名 */
   resetTsName: string;
+  /** 主单据类型 */
+  mainDetailsType: MainDetailListType;
+  /** 主单据的流程前缀 */
+  commitUrl: string;
 }
 
 /** 生成模块注释 */
-export const getModuleExplain = (formModel: FormModel) => {
+export const getModuleExplain = (formModel: FormModel, moduleName?: string) => {
   return `/*
   * @Author: ${formModel.author}
   * @Date: ${getTime()}
   * @LastEditors: ${formModel.email}
   * @LastEditTime: ${getTime()}
-  * @Description: ${formModel.moduleName}
+  * @Description: ${formModel.moduleName + moduleName}
   */`;
 };
 
@@ -191,15 +196,20 @@ export const checkTsData = (formModel: FormModel) => {
   return typeSchema;
 };
 
-// --------------Columns模块---------------------
-export const generateTsToColumns = (formModel: FormModel) => {
-  const textArray = checkTsData(formModel);
-  const result: any[] = [];
+/** 文档注字段注释上的生成代码的类型汇总 */
+export const getTypeList = () => {
   const typeList = ['boolean', 'string', 'number'].flatMap(curr => [
     curr,
     curr.charAt(0).toLocaleUpperCase() + curr.slice(1)
   ]);
+  return typeList;
+};
 
+// --------------Columns模块---------------------
+export const generateTsToColumns = (formModel: FormModel) => {
+  const textArray = checkTsData(formModel);
+  const result: any[] = [];
+  const typeList = getTypeList();
   textArray.forEach((item, index) => {
     if (typeList.includes(item)) {
       result.push({

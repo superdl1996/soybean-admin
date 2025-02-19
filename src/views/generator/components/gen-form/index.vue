@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { reactive, ref, useTemplateRef, watch } from 'vue';
 import type { FormModel } from '../shared';
-import { tableTypeMap } from './data';
+import { mainDetailList, tableTypeMap } from './data';
 
 interface Emits {
   /** 提交 */
@@ -17,6 +17,8 @@ defineOptions({
 const emit = defineEmits<Emits>();
 const model = defineModel<FormModel>('model', { required: true });
 const expandedNames = ref(['role-search']);
+const commitUrlConfig = reactive({ show: false });
+const formRef = useTemplateRef('formRef');
 
 watch(
   () => model.value.tableType,
@@ -40,6 +42,20 @@ watch(
   }
 );
 
+watch(
+  () => model.value.mainDetailsType,
+  nVal => {
+    if (nVal !== 'none') {
+      commitUrlConfig.show = true;
+    } else {
+      commitUrlConfig.show = false;
+    }
+  },
+  {
+    immediate: true
+  }
+);
+
 /** 移入 */
 const mouseenter = () => {
   expandedNames.value = ['role-search'];
@@ -47,27 +63,43 @@ const mouseenter = () => {
 
 /** 移出 */
 const mouseleave = () => {
-  // expandedNames.value = [];
+  expandedNames.value = [];
 };
 const handleClick = () => {
   expandedNames.value = !expandedNames.value.length ? ['role-search'] : [];
 };
 
 const submit = () => {
-  expandedNames.value = [];
+  // expandedNames.value = [];
   emit('submit');
 };
 
 const submitAndDownload = () => {
   emit('submitAndDownload');
 };
+
+defineExpose({
+  getFormRef: () => formRef.value
+});
 </script>
 
 <template>
   <NCard :bordered="false" size="small" class="card-wrapper" @mouseenter.self="mouseenter" @mouseleave="mouseleave">
     <NCollapse :expanded-names="expandedNames" @item-header-click="handleClick">
       <NCollapseItem title="生成条件" name="role-search">
-        <NForm :model="model" label-placement="left" :label-width="120">
+        <NForm
+          ref="formRef"
+          :model="model"
+          label-placement="left"
+          :label-width="120"
+          :rules="{
+            commitUrl: {
+              required: true,
+              message: '流程的commitUrl',
+              trigger: 'blur'
+            }
+          }"
+        >
           <NGrid responsive="screen" item-responsive>
             <NFormItemGi span="24 s:12 m:6" label="模块名称(中文注释)" path="moduleName" class="pr-20px">
               <NInput v-model:value="model.moduleName" placeholder="用于注释模块名" />
@@ -121,7 +153,7 @@ const submitAndDownload = () => {
               <NInput v-model:value="model.resetTsName" placeholder="重置生成的ts类型名字" />
             </NFormItemGi>
 
-            <NFormItemGi span="24 s:12 m:12" label="生成TS类型数据" path="resetTsName" class="pr-20px">
+            <NFormItemGi span="24 s:12 m:12" label="生成TS类型数据" path="typeSchema" class="pr-20px">
               <NInput
                 v-model:value="model.typeSchema"
                 type="textarea"
@@ -130,7 +162,7 @@ const submitAndDownload = () => {
                 placeholder="重置生成的ts类型名字"
               />
             </NFormItemGi>
-            <NFormItemGi span="24 s:12 m:12" path="resetTsName" class="pr-20px">
+            <NFormItemGi span="24 s:12 m:12" path="typeSchemaCheck" class="pr-20px">
               <template #label>
                 <NTooltip trigger="hover">
                   <template #trigger>
@@ -146,12 +178,29 @@ const submitAndDownload = () => {
               </template>
               <NInput v-model:value="model.typeSchemaCheck" type="textarea" round placeholder="重置生成的ts类型名字" />
             </NFormItemGi>
-            <NFormItemGi span="24 s:12 m:12" label="生成表格类型" path="resetTsName" class="pr-20px">
-              <NRadioGroup v-model:value="model.tableType" name="top-size">
+            <NFormItemGi span="24 s:6 m:6" label="生成表格类型" path="tableType" class="pr-20px">
+              <NRadioGroup v-model:value="model.tableType">
                 <NRadioButton :value="tableTypeMap.DEFAULT">默认</NRadioButton>
                 <NRadioButton :value="tableTypeMap.MAIN">Main</NRadioButton>
                 <NRadioButton :value="tableTypeMap.SUB">Sub</NRadioButton>
               </NRadioGroup>
+            </NFormItemGi>
+            <NFormItemGi span="24 s:6 m:6" label="主单据类型" path="mainDetailsType" class="pr-20px">
+              <NRadioGroup v-model:value="model.mainDetailsType">
+                <NRadioButton v-for="item in mainDetailList" :key="item.type" :value="item.type">
+                  {{ item.name }}
+                </NRadioButton>
+              </NRadioGroup>
+            </NFormItemGi>
+            <NFormItemGi
+              v-if="commitUrlConfig.show"
+              span="24 s:6 m:6"
+              label="流程的commitUrl"
+              path="commitUrl"
+              class="pr-20px"
+              :required="true"
+            >
+              <NInput v-model:value="model.commitUrl" placeholder="例 : /business/visa" />
             </NFormItemGi>
 
             <NFormItemGi span="24 s:12 m:24" class="pr-20px">

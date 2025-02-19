@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type FormModel, checkTsData, formatEmptyStr, getApiData, getModuleExplain } from '../shared';
+import { type FormModel, checkTsData, formatEmptyStr, getApiData, getModuleExplain, getTypeList } from '../shared';
 import { useCopy } from '../hook';
 import { tableTypeMap } from '../gen-form/data';
 
@@ -22,11 +22,12 @@ const generateTs = (tsName?: string) => {
   const isSub = formModel.tableType === tableTypeMap.SUB;
   const textArray = checkTsData(formModel);
   let text = '';
+  const typeList = getTypeList();
   textArray.forEach((type, index) => {
-    if (['boolean', 'string', 'number'].includes(type)) {
+    if (typeList.includes(type)) {
       const key = textArray[index - 1];
       const explain = textArray[index + 1];
-      text += `    ${explain ? `/** ${explain}  */\n  ` : ''}${key}: ${type};\n`;
+      text += `    ${explain ? `/** ${explain}  */\n  ` : ''}${key}: ${type.at(0)?.toLowerCase() + type.slice(1)};\n`;
     }
   });
   text = `

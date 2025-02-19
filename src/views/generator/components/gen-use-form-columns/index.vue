@@ -48,7 +48,25 @@ const generateCode = () => {
         valueType: 'select',
         formItemProps: { rules: VERIFICATION.required },
         customFieldProps: { options: dicts?.INDUSTRY }
-      }
+      },
+      /** textarea 跨行跨列配置,参考属性,不需要可删除 */
+      {
+        title: 'textarea跨行跨列',
+        dataIndex: 'annotations',
+        valueType: 'textarea',
+        colProps: { span: 24 },
+        formItemProps: {
+          labelCol: {
+            span: 2,
+          },
+          wrapperCol: {
+            span: 22,
+          },
+        },
+        customFieldProps: {
+          autoSize: { minRows: 2 },
+        },
+      },
    ]`
     );
   const CODE = `

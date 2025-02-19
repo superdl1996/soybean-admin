@@ -1,3 +1,5 @@
+import type { FormModel } from '@/views/generator/components/shared';
+
 /** The storage namespace */
 declare namespace StorageType {
   interface Session {
@@ -35,5 +37,7 @@ declare namespace StorageType {
       layout: UnionKey.ThemeLayoutMode;
       siderCollapse: boolean;
     };
+    /** 生成代码的条件 */
+    searchParams: FormModel;
   }
 }
