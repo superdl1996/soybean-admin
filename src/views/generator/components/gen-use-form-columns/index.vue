@@ -17,6 +17,8 @@ const code = defineModel<string>('genUseFormColumns');
 
 const generateCode = () => {
   const { listData } = getApiData({ formModel });
+  /** 有主单据类型 */
+  const isMainDetails = formModel.mainDetailsType !== 'none';
   const columnsData = generateTsToColumns(formModel);
   const columnsArray: any[] = columnsData.map(({ title, dataIndex }) => {
     const otherColumn: { [k: string]: any } = {};
@@ -73,7 +75,8 @@ const generateCode = () => {
 ${getModuleExplain(formModel)}
 
 import { FormColumnsDefine } from 'jd-framework-web/package/components';
-import type { ${listData?.tsName} } from './typings';
+
+import type { ${listData?.tsName} } from '${isMainDetails ? '..' : '.'}/typings';
 import VERIFICATION from '@/common/constant/verification';
 import { useDicts } from '@/common/hooks/useDicts';
 
