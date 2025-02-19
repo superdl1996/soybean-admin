@@ -66,7 +66,7 @@ export const getModuleExplain = (formModel: FormModel, moduleName?: string) => {
   * @Date: ${getTime()}
   * @LastEditors: ${formModel.email}
   * @LastEditTime: ${getTime()}
-  * @Description: ${formModel.moduleName + moduleName}
+  * @Description: ${formModel.moduleName + (moduleName ?? '')}
   */`;
 };
 
