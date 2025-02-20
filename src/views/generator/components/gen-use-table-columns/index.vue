@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type FormModel, generateTsToColumns, getApiData, getModuleExplain } from '../shared';
+import { type FormModel, formatEmptyStr, generateTsToColumns, getApiData, getModuleExplain } from '../shared';
 import { useCopy } from '../hook';
 
 interface Props {
@@ -16,7 +16,7 @@ const { copyCode } = useCopy({ templateName: 'baseCodeRef' });
 const code = defineModel<string>('genUseTableColumns');
 
 const generateCode = () => {
-  const { listData } = getApiData({ formModel });
+  const { listData, startUseData } = getApiData({ formModel });
   const columnsData = generateTsToColumns(formModel);
 
   /** 添加时间筛选 */
@@ -112,12 +112,32 @@ const generateCode = () => {
         valueType: 'select',
         customFieldProps: { options: dicts?.INDUSTRY }
       }
+      /** 启用禁用 */
+      ${formatEmptyStr(
+        startUseData,
+        `{
+        width: 60,
+        title: '状态',
+        dataIndex: 'billStatus',
+        valueType: 'select',
+        valueEnum: ENUMBILLSTATUS,
+        customRender: (_, { billStatus }) => <StatusText status={billStatus} />,
+        customFieldProps: { showSearch: true },
+      },
+      `
+      )}
    ]`
     );
   const CODE = `
 ${getModuleExplain(formModel)}
 
 import { TableColumnsDefine } from 'jd-framework-web/package/components';
+${formatEmptyStr(
+  startUseData,
+  `import { ENUMBILLSTATUS } from '@/common/constant/valueEnum';
+import StatusText from 'jd-framework-web/package/common/textTag/StatusText';
+`
+)}
 import { useDicts } from '@/common/hooks/useDicts';
 import type { ${listData?.tsName} } from './typings';
 

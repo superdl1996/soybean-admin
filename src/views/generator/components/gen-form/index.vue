@@ -149,6 +149,12 @@ defineExpose({
                 placeholder="{{myHost}}/business/assess/queryPageInfo.action"
               />
             </NFormItemGi>
+            <NFormItemGi span="24 s:12 m:6" label="(启|禁)用接口路径" path="tableStartUseApi" class="pr-20px">
+              <NInput
+                v-model:value="model.tableStartUseApi"
+                placeholder="{{myHost}}/business/config/workbillprocess/updateStatusByIds.action"
+              />
+            </NFormItemGi>
             <NFormItemGi span="24 s:12 m:6" label="重置TS类型名字" path="resetTsName" class="pr-20px">
               <NInput v-model:value="model.resetTsName" placeholder="重置生成的ts类型名字" />
             </NFormItemGi>

@@ -93,6 +93,7 @@ const searchParams = ref<FormModel>({
   tableSortApi: '',
   tableImportApi: '',
   tableExportApi: '',
+  tableStartUseApi: '',
   resetTsName: '',
   typeSchema,
   typeSchemaCheck: '',

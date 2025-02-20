@@ -16,8 +16,9 @@ const { formModel } = defineProps<Props>();
 const { copyCode } = useCopy({ templateName: 'baseCodeRef' });
 const code = defineModel<string>('genIndex');
 
+// eslint-disable-next-line complexity
 const generateCode = () => {
-  const { delData, editData, listData, sortData, importData, exportData } = getApiData({ formModel });
+  const { delData, editData, listData, sortData, importData, exportData, startUseData } = getApiData({ formModel });
   const isMain = formModel.tableType === tableTypeMap.MAIN;
   const isSub = formModel.tableType === tableTypeMap.SUB;
   const isSplit = isMain || isSub;
@@ -126,6 +127,20 @@ export default (${formatEmptyStr(isMain, `props: TYPES.MainTableProps`)}${format
     `export: {
       onSubmit: API.${exportData?.apiName},
       auth: authButton('export'),
+    },`
+  )}
+  ${formatEmptyStr(
+    startUseData,
+    `enable: {
+      onSubmit: API.${startUseData?.apiName},
+      auth: authButton('enable'),
+    },`
+  )}
+  ${formatEmptyStr(
+    startUseData,
+    `disable: {
+      onSubmit: API.${startUseData?.apiName},
+      auth: authButton('disable'),
     },`
   )}
   };

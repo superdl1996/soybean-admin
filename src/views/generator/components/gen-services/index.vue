@@ -16,7 +16,7 @@ const { formModel } = defineProps<Props>();
 const code = defineModel<string>('genServices');
 
 const generateCode = () => {
-  const { delData, editData, listData, sortData, importData, exportData } = getApiData({ formModel });
+  const { delData, editData, listData, sortData, importData, exportData, startUseData } = getApiData({ formModel });
   const CODE = `
 ${getModuleExplain(formModel)}
 
@@ -95,7 +95,20 @@ ${formatEmptyStr(
     responseType: 'blob',
   });
 }`
-)}`;
+)}
+
+${getFunctionExplain(formModel, 'tableStartUseApi')}
+${formatEmptyStr(
+  startUseData,
+  `export async function ${startUseData?.apiName}(data: FETCH.Req) {
+  return request<FETCH.Res>('${startUseData?.apiPath}', {
+    method: 'POST',
+    data,
+  });
+}`
+)}
+
+`;
   code.value = CODE;
 };
 

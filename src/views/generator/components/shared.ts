@@ -45,6 +45,8 @@ export interface FormModel {
   tableImportApi: string;
   /** 导出接口 */
   tableExportApi: string;
+  /** 启用禁用接口 */
+  tableStartUseApi: string;
   /** 生成ts类型的原始数据 */
   typeSchema: string;
   /** 生成表格类型 main:修改ts类型输出位MainTaleList sub:SubTaleList */
@@ -76,7 +78,8 @@ const explainDict: Partial<Record<keyof FormModel, string>> = {
   tableDelApi: '删除',
   tableSortApi: '上移下移',
   tableImportApi: '导入',
-  tableExportApi: '导出'
+  tableExportApi: '导出',
+  tableStartUseApi: '启用/禁用'
 };
 
 /**
@@ -138,13 +141,15 @@ export const getApiData = (params: { formModel: FormModel }) => {
   const sortData = formatApi({ apiUrl: formModel.tableSortApi, formModel });
   const importData = formatApi({ apiUrl: formModel.tableImportApi, formModel });
   const exportData = formatApi({ apiUrl: formModel.tableExportApi, formModel });
+  const startUseData = formatApi({ apiUrl: formModel.tableStartUseApi, formModel });
   return {
     listData,
     editData,
     delData,
     sortData,
     importData,
-    exportData
+    exportData,
+    startUseData
   };
 };
 
