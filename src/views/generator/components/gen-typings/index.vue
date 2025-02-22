@@ -25,9 +25,10 @@ const generateTs = (tsName?: string) => {
   const typeList = getTypeList();
   textArray.forEach((type, index) => {
     if (typeList.includes(type)) {
+      const typeText = type === 'integer' ? 'number' : type;
       const key = textArray[index - 1];
       const explain = textArray[index + 1];
-      text += `    ${explain ? `/** ${explain}  */\n  ` : ''}${key}: ${type.at(0)?.toLowerCase() + type.slice(1)};\n`;
+      text += `    ${explain ? `/** ${explain}  */\n  ` : ''}${key}: ${typeText.at(0)?.toLowerCase() + typeText.slice(1)};\n`;
     }
   });
   text = `

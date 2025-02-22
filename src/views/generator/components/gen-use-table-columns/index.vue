@@ -16,8 +16,11 @@ const { copyCode } = useCopy({ templateName: 'baseCodeRef' });
 const code = defineModel<string>('genUseTableColumns');
 
 const generateCode = () => {
-  const { listData, startUseData } = getApiData({ formModel });
+  const { listData, startUseData, rowEditData } = getApiData({ formModel });
   const columnsData = generateTsToColumns(formModel);
+
+  /** 是否为流程主单据类型 */
+  const isFlow = formModel.mainDetailsType === 'flow';
 
   /** 添加时间筛选 */
   const addColumnsData: any[] = [];
@@ -74,13 +77,16 @@ const generateCode = () => {
       return alignItem;
     };
 
+    const rowConfig = rowEditData ? { cellEdit: true } : {};
+
     return {
       title,
       dataIndex,
       ...dictItem,
       search: false,
       ...genWidthItem(),
-      ...genAlignItem()
+      ...genAlignItem(),
+      ...rowConfig
     };
   });
 
@@ -99,7 +105,7 @@ const generateCode = () => {
   });
 
   const reg = /(},|\[)/g;
-  const columnsJson = JSON.stringify(columnsArray)
+  let columnsJson = JSON.stringify(columnsArray)
     .replace(reg, '$1\n      ')
     .replace(
       ']',
@@ -111,11 +117,11 @@ const generateCode = () => {
         width: 80,
         valueType: 'select',
         customFieldProps: { options: dicts?.INDUSTRY }
-      }
-      /** 启用禁用 */
+      },
       ${formatEmptyStr(
         startUseData,
-        `{
+        `/** 启用禁用 */
+        {
         width: 60,
         title: '状态',
         dataIndex: 'billStatus',
@@ -128,9 +134,60 @@ const generateCode = () => {
       )}
    ]`
     );
+
+  if (isFlow) {
+    columnsJson = columnsJson.replace(
+      '{"dataIndex":"index","width":60},',
+      `
+    {"dataIndex":"index","width":60},
+    {
+      title: '操作',
+      width: 70,
+      align: 'center',
+      search: false,
+      dataIndex: 'action',
+      customRender: (_, { processInstanceId, processDefinitionId }) => (
+        <Space>
+          <ProcessChart
+            button="icon"
+            processInstanceId={processInstanceId}
+            processDefinitionId={processDefinitionId}
+          />
+          <ProcessHistoryTable button="icon" processInstanceId={processInstanceId} />
+        </Space>
+      ),
+    },
+    {
+      title: '审批状态',
+      dataIndex: 'billStatus',
+      valueType: 'radioButton',
+      valueEnum: ENUMPROCESSSTATUS,
+      customRender: (_, { billStatus, workflowLockStatus, returnStatus }) => (
+        <ProcessStatus
+          status={billStatus}
+          workflowLockStatus={workflowLockStatus}
+          returnStatus={returnStatus}
+        />
+      ),
+      renderFormItem: ({ valueEnum }) => <RadioGroupButton valueEnum={valueEnum} />,
+      align: 'center',
+    },`
+    );
+  }
   const CODE = `
 ${getModuleExplain(formModel)}
 
+${formatEmptyStr(
+  isFlow,
+  `
+import { Space } from 'antd';
+import ProcessChart from 'jd-framework-web/package/common/process/ProcessChart';
+import ProcessHistoryTable from 'jd-framework-web/package/common/process/ProcessHistoryTable';
+import { ENUMPROCESSSTATUS } from '@/common/constant/valueEnum';
+import ProcessStatus from 'jd-framework-web/package/common/textTag/ProcessStatus';
+import RadioGroupButton from 'jd-framework-web/package/components/RadioGroupButton';
+`
+)}
 import { TableColumnsDefine } from 'jd-framework-web/package/components';
 ${formatEmptyStr(
   startUseData,

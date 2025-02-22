@@ -37,6 +37,8 @@ export interface FormModel {
   tableListApi: string;
   /** 新增/编辑接口 */
   tableEditApi: string;
+  /** 行编辑接口 */
+  tableRowEditApi: string;
   /** 删除接口 */
   tableDelApi: string;
   /** 上移下移接口 */
@@ -45,6 +47,8 @@ export interface FormModel {
   tableImportApi: string;
   /** 导出接口 */
   tableExportApi: string;
+  /** 是否为勇哥版导出 */
+  tableExportStateApi: boolean;
   /** 启用禁用接口 */
   tableStartUseApi: string;
   /** 生成ts类型的原始数据 */
@@ -75,6 +79,7 @@ export const getModuleExplain = (formModel: FormModel, moduleName?: string) => {
 const explainDict: Partial<Record<keyof FormModel, string>> = {
   tableListApi: '列表',
   tableEditApi: '新增/编辑',
+  tableRowEditApi: '行编辑',
   tableDelApi: '删除',
   tableSortApi: '上移下移',
   tableImportApi: '导入',
@@ -137,6 +142,7 @@ export const getApiData = (params: { formModel: FormModel }) => {
   const { formModel } = params;
   const listData = formatApi({ apiUrl: formModel.tableListApi, formModel });
   const editData = formatApi({ apiUrl: formModel.tableEditApi, formModel });
+  const rowEditData = formatApi({ apiUrl: formModel.tableRowEditApi, formModel });
   const delData = formatApi({ apiUrl: formModel.tableDelApi, formModel });
   const sortData = formatApi({ apiUrl: formModel.tableSortApi, formModel });
   const importData = formatApi({ apiUrl: formModel.tableImportApi, formModel });
@@ -145,6 +151,7 @@ export const getApiData = (params: { formModel: FormModel }) => {
   return {
     listData,
     editData,
+    rowEditData,
     delData,
     sortData,
     importData,
@@ -203,7 +210,7 @@ export const checkTsData = (formModel: FormModel) => {
 
 /** 文档注字段注释上的生成代码的类型汇总 */
 export const getTypeList = () => {
-  const typeList = ['boolean', 'string', 'number'].flatMap(curr => [
+  const typeList = ['boolean', 'string', 'number', 'integer'].flatMap(curr => [
     curr,
     curr.charAt(0).toLocaleUpperCase() + curr.slice(1)
   ]);

@@ -16,7 +16,9 @@ const { formModel } = defineProps<Props>();
 const code = defineModel<string>('genServices');
 
 const generateCode = () => {
-  const { delData, editData, listData, sortData, importData, exportData, startUseData } = getApiData({ formModel });
+  const { delData, editData, rowEditData, listData, sortData, importData, exportData, startUseData } = getApiData({
+    formModel
+  });
   const CODE = `
 ${getModuleExplain(formModel)}
 
@@ -40,6 +42,18 @@ ${formatEmptyStr(
   editData,
   `export async function ${editData?.apiName}(data: Partial<TYPES.${editData?.tsName}>) {
   return request<FETCH.Res>('${editData?.apiPath}', {
+    method: 'POST',
+    data,
+  });
+}`
+)}
+
+
+${getFunctionExplain(formModel, 'tableRowEditApi')}
+${formatEmptyStr(
+  rowEditData,
+  `export async function ${rowEditData?.apiName}(data: FETCH.CellEditReq>) {
+  return request<FETCH.Res>('${rowEditData?.apiPath}', {
     method: 'POST',
     data,
   });

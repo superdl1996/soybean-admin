@@ -84,9 +84,14 @@ const getFlowCode = () => {
       if (res?.status !== 'SUCCESS') return;
       /** 获取新的主单据 */
       const queryRes = await businessQueryOne(commitUrl, res?.rows?.id);
-      setOperateCurrent({ ...operateCurrent, ...queryRes?.rows });
+      const queryResRows = queryRes.rows;
+      /** 解决 时间字段 传空字符串的 乱码问题  后端如果不返回空字符串可删除 */
+      for (const [key, value] of Object.entries(queryResRows)) {
+        if (value === '') queryResRows[key] = undefined;
+      }
+      setOperateCurrent({ ...operateCurrent, ...queryResRows });
       /** 表单回填 */
-      mainFormRef?.current?.setFieldsValue({ ...queryRes?.rows });
+      mainFormRef?.current?.setFieldsValue({ ...queryResRows });
     };
 
     /** 保存方法 */
@@ -199,7 +204,7 @@ const getNormalCode = () => {
   export default (props: DefineProps) => {
     const { formType } = props;
 
-    /** 流程前缀或查询queryOne前缀  不需要可以删掉*/
+    /** 流程前缀或查询queryOne前缀 */
     // const commitUrl = '${formModel.commitUrl}';
     /** 非新增取当前行 */
     const formCurrent = props.formType === 1 ? undefined : props.operateCurrent;
@@ -221,15 +226,20 @@ const getNormalCode = () => {
       ...schemaFormConfig,
     };
 
-    /** 保存成功后 回填单据信息  不需要可以删掉 */
-    // const handleOnSaveFinish = async (res: FETCH.Row) => {
-    //   if (res?.status !== 'SUCCESS') return;
-    //   /** 获取新的主单据 */
-    //   const queryRes = await businessQueryOne(commitUrl, res?.rows?.id);
-    //   setOperateCurrent({ ...operateCurrent, ...queryRes?.rows });
-    //   /** 表单回填 */
-    //   mainFormRef?.current?.setFieldsValue({ ...queryRes?.rows });
-    // };
+    /** 保存成功后 回填单据信息  */
+    const handleOnSaveFinish = async (res: FETCH.Row) => {
+      if (res?.status !== 'SUCCESS') return;
+      /** 获取新的主单据 */
+      const queryRes = await businessQueryOne(commitUrl, res?.rows?.id);
+      const queryResRows = queryRes.rows;
+      /** 解决 时间字段 传空字符串的 乱码问题  后端如果不返回空字符串可删除 */
+      for (const [key, value] of Object.entries(queryResRows)) {
+        if (value === '') queryResRows[key] = undefined;
+      }
+      setOperateCurrent({ ...operateCurrent, ...queryResRows });
+      /** 表单回填 */
+      mainFormRef?.current?.setFieldsValue({ ...queryResRows });
+    };
 
     /** 保存方法 */
     const handleOnSave = async () => {
@@ -237,11 +247,11 @@ const getNormalCode = () => {
       const mainFormValues = await mainFormRef?.current?.validateFieldsReturnFormatValue?.();
       try {
         setSaveLoading(true);
-        const { status, message: messageText } = await API.${editData?.apiName}({ ...mainFormValues, id: operateCurrent?.id });
-        if (status === 'SUCCESS') {
-          message.success(messageText || '保存成功');
+        const res = await API.${editData?.apiName}({ ...mainFormValues, id: operateCurrent?.id });
+        if (res?.status === 'SUCCESS') {
+          message.success(res?.message || '保存成功');
         }
-        // handleOnSaveFinish(res);
+        handleOnSaveFinish(res);
       } finally {
         setSaveLoading(false);
       }

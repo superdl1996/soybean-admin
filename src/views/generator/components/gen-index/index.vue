@@ -18,13 +18,18 @@ const code = defineModel<string>('genIndex');
 
 // eslint-disable-next-line complexity
 const generateCode = () => {
-  const { delData, editData, listData, sortData, importData, exportData, startUseData } = getApiData({ formModel });
+  const { delData, editData, listData, sortData, importData, exportData, startUseData, rowEditData } = getApiData({
+    formModel
+  });
   const isMain = formModel.tableType === tableTypeMap.MAIN;
   const isSub = formModel.tableType === tableTypeMap.SUB;
   const isSplit = isMain || isSub;
 
   /** 有主单据类型 */
   const isMainDetails = formModel.mainDetailsType !== 'none';
+
+  /** 是否为勇哥版导出 */
+  const isYongExport = formModel.tableExportStateApi;
 
   const CODE = `
 ${getModuleExplain(formModel)}
@@ -34,6 +39,7 @@ ${formatEmptyStr(!isSplit, "import ViewContainer from 'jd-framework-web/package/
 import BaseTable from 'jd-framework-web/package/components/BaseTable';
 import { BaseTableProps,TableActionType, TableToolbarDefine } from 'jd-framework-web/package/components/BaseTable/typings';
 import useAuthButton from 'jd-framework-web/package/utils/auth/useAuthButton';
+${formatEmptyStr(isYongExport, `import { reportExcel } from '@/common/services/system';`)}
 
 import * as API from './services';
 import * as TYPES from './typings';
@@ -105,7 +111,7 @@ export default (${formatEmptyStr(isMain, `props: TYPES.MainTableProps`)}${format
     },`
   )}
   ${formatEmptyStr(
-    editData,
+    editData && isMainDetails,
     `details: {
       modalTitle: '查看',
       ${formatEmptyStr(!isMainDetails, `columns: formColumns,`)}
@@ -113,7 +119,14 @@ export default (${formatEmptyStr(isMain, `props: TYPES.MainTableProps`)}${format
       auth: authButton('details'),
     },`
   )}
-  ${formatEmptyStr(delData, `deleted: { onSubmit: API.${delData?.apiName}, auth: authButton('deleted') },`)}
+  ${formatEmptyStr(
+    delData,
+    `deleted: {
+    ${formatEmptyStr(startUseData, "actionControl: { key: 'billStatus', value: '3', message: '启用状态的数据不允许删除!', equal: true },")}
+    onSubmit: API.${delData?.apiName},
+    auth: authButton('deleted')
+    },`
+  )}
   ${formatEmptyStr(sortData, `sort: { onSubmit: API.${sortData?.apiName}, auth: authButton('sort') },`)}
   ${formatEmptyStr(
     importData,
@@ -122,13 +135,25 @@ export default (${formatEmptyStr(isMain, `props: TYPES.MainTableProps`)}${format
       auth: authButton('import'),
     },`
   )}
-  ${formatEmptyStr(
-    exportData,
-    `export: {
+  ${
+    isYongExport
+      ? `export: {
+      exportType: 'default',
+      onSubmit: reportExcel,
+      exportParams: {
+        _u: '',
+        _n: '',
+      },
+      auth: authButton('export'),
+    },`
+      : formatEmptyStr(
+          exportData,
+          `export: {
       onSubmit: API.${exportData?.apiName},
       auth: authButton('export'),
     },`
-  )}
+        )
+  }
   ${formatEmptyStr(
     startUseData,
     `enable: {
@@ -157,7 +182,9 @@ export default (${formatEmptyStr(isMain, `props: TYPES.MainTableProps`)}${format
     onActionCurrent: (record) => ${formatEmptyStr(!isMain && !isSub, `${listData?.currentState[1]}(record)`)}${formatEmptyStr(isMain, `setMainCurrent(record)`)}${formatEmptyStr(isSub, `setSubCurrent(record)`)},
     service: {
       dataSourceRequest:API.${listData?.apiName},
+      ${formatEmptyStr(rowEditData, `cellEditSaveRequest: API.${rowEditData?.apiName}`)}
     },
+    ${formatEmptyStr(rowEditData, `cellEditable: true`)}
   };
 
   return (

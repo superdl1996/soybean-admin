@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { reactive, ref, useTemplateRef, watch } from 'vue';
-import type { FormModel } from '../shared';
+import { type FormModel, getApiData } from '../shared';
 import { mainDetailList, tableTypeMap } from './data';
 
 interface Emits {
@@ -56,6 +56,16 @@ watch(
   }
 );
 
+watch(
+  () => model.value.tableListApi,
+  () => {
+    const { listData } = getApiData({ formModel: model.value });
+    const commitUrlAry = listData?.apiPath.split('/') || [];
+    commitUrlAry.pop();
+    model.value.commitUrl = `${commitUrlAry.join('/')}`;
+  }
+);
+
 /** 移入 */
 const mouseenter = () => {
   expandedNames.value = ['role-search'];
@@ -84,7 +94,7 @@ defineExpose({
 </script>
 
 <template>
-  <NCard :bordered="false" size="small" class="card-wrapper" @mouseenter.self="mouseenter" @mouseleave="mouseleave">
+  <NCard :bordered="false" size="small" class="card-wrapper" @mouseenter.self="mouseenter" @mouseleave="() => {}">
     <NCollapse :expanded-names="expandedNames" @item-header-click="handleClick">
       <NCollapseItem title="生成条件" name="role-search">
         <NForm
@@ -128,6 +138,12 @@ defineExpose({
                 placeholder="{{myHost}}/business/assess/queryPageInfo.action"
               />
             </NFormItemGi>
+            <NFormItemGi span="24 s:12 m:6" label="行编辑路径" path="tableRowEditApi" class="pr-20px">
+              <NInput
+                v-model:value="model.tableRowEditApi"
+                placeholder="{{myHost}}/business/work/bill/content/updateRow.action"
+              />
+            </NFormItemGi>
             <NFormItemGi span="24 s:12 m:6" label="删除接口路径" path="tableDelApi" class="pr-20px">
               <NInput v-model:value="model.tableDelApi" placeholder="{{myHost}}/business/assess/queryPageInfo.action" />
             </NFormItemGi>
@@ -148,6 +164,44 @@ defineExpose({
                 v-model:value="model.tableExportApi"
                 placeholder="{{myHost}}/business/assess/queryPageInfo.action"
               />
+            </NFormItemGi>
+            <NFormItemGi span="24 s:12 m:6" label="是否勇哥版导出" path="tableExportStateApi" class="pr-20px">
+              <NCheckbox v-model:checked="model.tableExportStateApi">
+                <NTooltip trigger="hover">
+                  <template #trigger>取消勾选则使用传入路径</template>
+                  勾选此项需要在 src/common/services/system/index.ts 文件夹下创建如下函数:
+                  <code>
+                    <br />
+                    export async function reportExcel(
+                    <br />
+                    data: FETCH.Req & { /** 后端id */
+                    <br />
+                    _u?: string;
+                    <br />
+                    /** 导出名称 */
+                    <br />
+                    _n?: string;
+                    <br />
+                    },
+                    <br />
+                    ) {
+                    <br />
+                    return request&lt;FETCH.Res&gt;('/jonda/report/excel', {
+                    <br />
+                    method: 'POST',
+                    <br />
+                    data,
+                    <br />
+                    getResponse: true,
+                    <br />
+                    responseType: 'blob',
+                    <br />
+                    });
+                    <br />
+                    }
+                  </code>
+                </NTooltip>
+              </NCheckbox>
             </NFormItemGi>
             <NFormItemGi span="24 s:12 m:6" label="(启|禁)用接口路径" path="tableStartUseApi" class="pr-20px">
               <NInput
@@ -211,6 +265,12 @@ defineExpose({
 
             <NFormItemGi span="24 s:12 m:24" class="pr-20px">
               <NSpace class="w-full" justify="end">
+                <NButton type="primary" @click="mouseleave">
+                  <template #icon>
+                    <icon-carbon-upgrade class="text-icon" />
+                  </template>
+                  收起
+                </NButton>
                 <NButton type="primary" @click="submit">
                   <template #icon>
                     <icon-carbon-chart-radial class="text-icon" />
