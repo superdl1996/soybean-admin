@@ -52,7 +52,7 @@ ${formatEmptyStr(
 ${getFunctionExplain(formModel, 'tableRowEditApi')}
 ${formatEmptyStr(
   rowEditData,
-  `export async function ${rowEditData?.apiName}(data: FETCH.CellEditReq>) {
+  `export async function ${rowEditData?.apiName}(data: FETCH.CellEditReq) {
   return request<FETCH.Res>('${rowEditData?.apiPath}', {
     method: 'POST',
     data,
