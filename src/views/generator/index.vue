@@ -81,6 +81,12 @@ projectType	string	工程类型
 listId	string	无
 completeDate	string	审定日期`;
 
+const expandedNames = ref<string[]>();
+
+const changeCollapse = (params?: string[]) => {
+  expandedNames.value = params;
+};
+
 const searchParams = ref<FormModel>({
   moduleName: '汇总表',
   fileName: 'DefaultTable',
@@ -177,7 +183,14 @@ const updateValue = (value: string) => {
 
 <template>
   <div class="min-h-500px flex-col-stretch gap-16px overflow-hidden lt-sm:overflow-auto">
-    <GenForm ref="genFormRef" v-model:model="searchParams" @submit="submit" @submit-and-download="submitAndDownload" />
+    <GenForm
+      ref="genFormRef"
+      v-model:model="searchParams"
+      :expanded-names="expandedNames"
+      @submit="submit"
+      @submit-and-download="submitAndDownload"
+      @change-collapse="changeCollapse"
+    />
     <NCard title="" :bordered="false" size="small" content-class="h-100%" class="h-100% overflow-y-hidden card-wrapper">
       <NTabs class="h-100%" pane-wrapper-class="h-100%" type="line" animated @update-value="updateValue">
         <NTabPane

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive, ref, useTemplateRef, watch } from 'vue';
+import { reactive, useTemplateRef, watch } from 'vue';
 import { type FormModel, getApiData } from '../shared';
 import { mainDetailList, tableTypeMap } from './data';
 
@@ -8,6 +8,8 @@ interface Emits {
   (e: 'submit'): void;
   /** 提交并下载 */
   (e: 'submitAndDownload'): void;
+  /** 展开折叠 */
+  (e: 'changeCollapse', params?: string[]): void;
 }
 
 defineOptions({
@@ -15,8 +17,17 @@ defineOptions({
 });
 
 const emit = defineEmits<Emits>();
+
 const model = defineModel<FormModel>('model', { required: true });
-const expandedNames = ref(['role-search']);
+
+const props = withDefaults(
+  defineProps<{
+    /** 表单数据 */
+    expandedNames?: string[];
+  }>(),
+  { expandedNames: () => ['role-search'] }
+);
+
 const commitUrlConfig = reactive({ show: false });
 const formRef = useTemplateRef('formRef');
 
@@ -68,23 +79,24 @@ watch(
 
 /** 移入 */
 const mouseenter = () => {
-  expandedNames.value = ['role-search'];
+  emit('changeCollapse', ['role-search']);
 };
 
 /** 移出 */
 const mouseleave = () => {
-  expandedNames.value = [];
+  emit('changeCollapse', []);
 };
 const handleClick = () => {
-  expandedNames.value = !expandedNames.value.length ? ['role-search'] : [];
+  emit('changeCollapse', !props.expandedNames.length ? ['role-search'] : []);
 };
 
 const submit = () => {
-  // expandedNames.value = [];
+  emit('changeCollapse', []);
   emit('submit');
 };
 
 const submitAndDownload = () => {
+  emit('changeCollapse', []);
   emit('submitAndDownload');
 };
 
@@ -186,17 +198,11 @@ defineExpose({
                     <br />
                     ) {
                     <br />
-                    return request&lt;FETCH.Res&gt;('/jonda/report/excel', {
+                    const { current, exportAll, pageNumber, pageSize, searchParams, ...params } = data;
                     <br />
-                    method: 'POST',
+                    const queryString = new URLSearchParams(params).toString();
                     <br />
-                    data,
-                    <br />
-                    getResponse: true,
-                    <br />
-                    responseType: 'blob',
-                    <br />
-                    });
+                    window.open(`/jonda/report/excel?${queryString}`);
                     <br />
                     }
                   </code>
@@ -238,6 +244,7 @@ defineExpose({
               </template>
               <NInput v-model:value="model.typeSchemaCheck" type="textarea" round placeholder="重置生成的ts类型名字" />
             </NFormItemGi>
+
             <NFormItemGi span="24 s:6 m:6" label="生成表格类型" path="tableType" class="pr-20px">
               <NRadioGroup v-model:value="model.tableType">
                 <NRadioButton :value="tableTypeMap.DEFAULT">默认</NRadioButton>

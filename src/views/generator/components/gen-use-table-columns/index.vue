@@ -24,8 +24,10 @@ const generateCode = () => {
 
   /** 添加时间筛选 */
   const addColumnsData: any[] = [];
-  const columnsArray: any[] = columnsData.map(({ title, dataIndex }) => {
+  const columnsArray: any[] = columnsData.map(item => {
+    const { title, dataIndex } = item;
     if (dataIndex.endsWith('Date') || dataIndex.endsWith('Datetime')) {
+      item.valueType = 'date';
       addColumnsData.push({
         title,
         dataIndex,

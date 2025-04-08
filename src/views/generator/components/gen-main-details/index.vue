@@ -33,6 +33,7 @@ const getFlowCode = () => {
   import AnnexTable from 'jd-framework-web/package/common/annex/AnnexTable';
   import { LAYOUTCOL } from '@/common/constant/layoutCol';
 
+
   import useMainFormColumns from './useMainFormColumns';
   import * as TYPES from '../typings';
   import * as API from '../services';
@@ -84,11 +85,8 @@ const getFlowCode = () => {
       if (res?.status !== 'SUCCESS') return;
       /** 获取新的主单据 */
       const queryRes = await businessQueryOne(commitUrl, res?.rows?.id);
-      const queryResRows = queryRes.rows;
-      /** 解决 时间字段 传空字符串的 乱码问题  后端如果不返回空字符串可删除 */
-      for (const [key, value] of Object.entries(queryResRows)) {
-        if (value === '') queryResRows[key] = undefined;
-      }
+      const queryResRows = queryRes?.rows
+
       setOperateCurrent({ ...operateCurrent, ...queryResRows });
       /** 表单回填 */
       mainFormRef?.current?.setFieldsValue({ ...queryResRows });
@@ -156,12 +154,27 @@ const getFlowCode = () => {
       {
         label: '其他信息',
         key: 'tab2',
-        children: <h1>其他信息</h1>,
+        children: (
+          <SpaceView style={{ height: '100%' }} disable={!operateCurrent?.id}>
+            <BaseCard bordered type="H2" title="其他信息">
+              <MyComponent
+                operateCurrent={operateCurrent}
+                processAuth={processAuth}
+              />
+            </BaseCard>
+          </SpaceView>
+        ),
       },
     ];
 
     return (
-      <ProcessBusiness {...processParams} tabs={{ type: 'card', animated: true, items: tabItems }}></ProcessBusiness>
+      <ProcessBusiness {...processParams} tabs={{ type: 'card', animated: true }}>
+        {tabItems.map((item) => (
+          <BaseCard.TabPane tab={item.label} key={item.key}>
+            {item.children}
+          </BaseCard.TabPane>
+        ))}
+      </ProcessBusiness>
     );
   };
   `;
@@ -194,8 +207,10 @@ const getNormalCode = () => {
   };
 
   /** 表单通用配置 */
-  const schemaFormConfig = {
+  const schemaFormConfig: Omit<BaseSchemaFormProps, 'columns' | 'layoutType'> = {
     ...LAYOUTCOL.defaultLayout,
+    labelCol: { style: { width: 140 } },
+    wrapperCol: { span: 'auto', style: { marginRight: 24 } },
     submitter: false,
     grid: true,
   };
@@ -231,11 +246,8 @@ const getNormalCode = () => {
       if (res?.status !== 'SUCCESS') return;
       /** 获取新的主单据 */
       const queryRes = await businessQueryOne(commitUrl, res?.rows?.id);
-      const queryResRows = queryRes.rows;
-      /** 解决 时间字段 传空字符串的 乱码问题  后端如果不返回空字符串可删除 */
-      for (const [key, value] of Object.entries(queryResRows)) {
-        if (value === '') queryResRows[key] = undefined;
-      }
+      const queryResRows = queryRes?.rows;
+
       setOperateCurrent({ ...operateCurrent, ...queryResRows });
       /** 表单回填 */
       mainFormRef?.current?.setFieldsValue({ ...queryResRows });
@@ -300,7 +312,16 @@ const getNormalCode = () => {
       {
         label: '其他信息',
         key: 'tab2',
-        children: <h1>其他信息</h1>,
+        children: (
+          <SpaceView style={{ height: '100%' }} disable={!operateCurrent?.id}>
+            <BaseCard bordered type="H2" title="其他信息">
+              <MyComponent
+                operateCurrent={operateCurrent}
+                processAuth={processAuth}
+              />
+            </BaseCard>
+          </SpaceView>
+        ),
       },
     ];
 

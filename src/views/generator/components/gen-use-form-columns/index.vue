@@ -57,14 +57,6 @@ const generateCode = () => {
         dataIndex: 'annotations',
         valueType: 'textarea',
         colProps: { span: 24 },
-        formItemProps: {
-          labelCol: {
-            span: 2,
-          },
-          wrapperCol: {
-            span: 22,
-          },
-        },
         customFieldProps: {
           autoSize: { minRows: 2 },
         },

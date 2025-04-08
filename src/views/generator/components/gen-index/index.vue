@@ -28,6 +28,9 @@ const generateCode = () => {
   /** 有主单据类型 */
   const isMainDetails = formModel.mainDetailsType !== 'none';
 
+  /** 有流程类型 */
+  const isFlowDetails = formModel.mainDetailsType === 'flow';
+
   /** 是否为勇哥版导出 */
   const isYongExport = formModel.tableExportStateApi;
 
@@ -37,6 +40,7 @@ ${getModuleExplain(formModel)}
 import { ${formatEmptyStr(isMainDetails, `useRef, `)}useState } from 'react';
 ${formatEmptyStr(!isSplit, "import ViewContainer from 'jd-framework-web/package/components/ViewContainer';")}
 import BaseTable from 'jd-framework-web/package/components/BaseTable';
+${formatEmptyStr(isFlowDetails, `import ProcessButton from 'jd-framework-web/package/common/process/ProcessButton';`)}
 import { BaseTableProps,TableActionType, TableToolbarDefine } from 'jd-framework-web/package/components/BaseTable/typings';
 import useAuthButton from 'jd-framework-web/package/utils/auth/useAuthButton';
 ${formatEmptyStr(isYongExport, `import { reportExcel } from '@/common/services/system';`)}
@@ -72,11 +76,10 @@ export default (${formatEmptyStr(isMain, `props: TYPES.MainTableProps`)}${format
   const modalProps = { afterClose: tableReload };`
   )}
 
-
   /** 表格操作按钮配置  */
   const toolbar: TableToolbarDefine = {
   ${formatEmptyStr(
-    editData,
+    editData && !rowEditData,
     `plus: {
       modalTitle: '新增',
       ${formatEmptyStr(
@@ -94,7 +97,7 @@ export default (${formatEmptyStr(isMain, `props: TYPES.MainTableProps`)}${format
     },`
   )}
   ${formatEmptyStr(
-    editData,
+    editData && !rowEditData,
     `edit: {
       modalTitle: '编辑',
       ${formatEmptyStr(
@@ -108,6 +111,13 @@ export default (${formatEmptyStr(isMain, `props: TYPES.MainTableProps`)}${format
       modalProps,`
       )}
       auth: authButton('edit'),
+    },`
+  )}
+  ${formatEmptyStr(
+    rowEditData,
+    `plusLine: {
+      onSubmit: API.${editData?.apiName},
+      auth: authButton('plus'),
     },`
   )}
   ${formatEmptyStr(
@@ -144,12 +154,14 @@ export default (${formatEmptyStr(isMain, `props: TYPES.MainTableProps`)}${format
         _u: '',
         _n: '',
       },
+      determineActionCurrent: false,
       auth: authButton('export'),
     },`
       : formatEmptyStr(
           exportData,
           `export: {
       onSubmit: API.${exportData?.apiName},
+      determineActionCurrent: false,
       auth: authButton('export'),
     },`
         )
@@ -170,12 +182,26 @@ export default (${formatEmptyStr(isMain, `props: TYPES.MainTableProps`)}${format
   )}
   };
 
+
+ ${formatEmptyStr(
+   isFlowDetails,
+   `const toolbarAfter = (
+      <ProcessButton
+        commitUrl="${formModel.commitUrl}"
+        current={${listData?.currentState[0]}}
+        mode="list"
+        refresh={tableReload}
+      />
+  );`
+ )}
+
   /** 表格配置 */
   const generateTable: BaseTableProps<TYPES.${listData?.tsName}> = {
     persistenceKey: '${listData?.persistenceKey}',
     ${formatEmptyStr(isMainDetails, 'actionRef: tableActionRef,')}
     virtual: false,
     toolbar,
+    ${formatEmptyStr(isFlowDetails, `toolbarAfter,`)}
     columns: tableColumns,
     columnsDynamic: true,
     columnDigitNilText: '',

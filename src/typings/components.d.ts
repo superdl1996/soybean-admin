@@ -28,6 +28,7 @@ declare module 'vue' {
     IconCarbonSiStatusInProgress: typeof import('~icons/carbon/si-status-in-progress')['default']
     IconCarbonStop: typeof import('~icons/carbon/stop')['default']
     IconCarbonUpgrade: typeof import('~icons/carbon/upgrade')['default']
+    IconCarbonWarningFilled: typeof import('~icons/carbon/warning-filled')['default']
     'IconCharm:download': typeof import('~icons/charm/download')['default']
     'IconF7:circleFill': typeof import('~icons/f7/circle-fill')['default']
     'IconF7:flagCircleFill': typeof import('~icons/f7/flag-circle-fill')['default']
