@@ -200,9 +200,19 @@ defineExpose({
                     <br />
                     const { current, exportAll, pageNumber, pageSize, searchParams, ...params } = data;
                     <br />
+                    // 1. 将字符串编码为 UTF-8 字节数组
+                    <br />
+                    const encoder = new TextEncoder();
+                    <br />
+                    const bytes = encoder.encode(searchParams);
+                    <br />
+                    // 2. 将字节数组转换为二进制字符串
+                    <br />
+                    const binaryString = String.fromCharCode(...bytes);
+                    <br />
                     const queryString = new URLSearchParams(params).toString();
                     <br />
-                    window.open(`/jonda/report/excel?${queryString}`);
+                    window.open(`/jonda/report/excel?${queryString}&searchParams=${btoa(binaryString)}`);
                     <br />
                     }
                   </code>
