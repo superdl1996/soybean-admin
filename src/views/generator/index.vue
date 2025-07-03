@@ -123,7 +123,7 @@ const requestGenerate = () => {
 
   request({
     // url: 'http://localhost:3000/generate',
-    url: 'https://superdl.top/generate',
+    url: 'https://code.superdo.top/generate',
     method: 'post',
     responseType: 'blob',
     data: { codeModel: genCodeModel, fileName: searchParams.value.fileName }

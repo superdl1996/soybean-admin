@@ -47,6 +47,8 @@ const getFlowCode = () => {
   /** 表单通用配置 */
   const schemaFormConfig = {
     ...LAYOUTCOL.defaultLayout,
+    labelCol: { style: { width: 140 } },
+    wrapperCol: { span: 'auto', style: { marginRight: 24 } },
     submitter: false,
     grid: true,
   };

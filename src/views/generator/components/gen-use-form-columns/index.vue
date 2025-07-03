@@ -58,7 +58,7 @@ const generateCode = () => {
         valueType: 'textarea',
         colProps: { span: 24 },
         customFieldProps: {
-          autoSize: { minRows: 2 },
+          style: { height: 60 },
         },
       },
    ]`
