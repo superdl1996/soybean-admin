@@ -41,7 +41,7 @@ ${getFunctionExplain(formModel, 'tableEditApi')}
 ${formatEmptyStr(
   editData,
   `export async function ${editData?.apiName}(data: Partial<TYPES.${editData?.tsName}>) {
-  return request<FETCH.Res>('${editData?.apiPath}', {
+  return request<FETCH.Row>('${editData?.apiPath}', {
     method: 'POST',
     data,
   });
