@@ -1,5 +1,13 @@
 <script setup lang="ts">
-import { type FormModel, checkTsData, formatEmptyStr, getApiData, getModuleExplain, getTypeList } from '../shared';
+import {
+  type FormModel,
+  checkTsData,
+  formatEmptyStr,
+  getApiData,
+  getModuleExplain,
+  getTsMapping,
+  getTypeList
+} from '../shared';
 import { useCopy } from '../hook';
 import { tableTypeMap } from '../gen-form/data';
 
@@ -23,9 +31,10 @@ const generateTs = (tsName?: string) => {
   const textArray = checkTsData(formModel);
   let text = '';
   const typeList = getTypeList();
+  const tsMapping = getTsMapping();
   textArray.forEach((type, index) => {
     if (typeList.includes(type)) {
-      const typeText = type === 'integer' ? 'number' : type;
+      const typeText = tsMapping?.[type as keyof typeof tsMapping] ?? type;
       const key = textArray[index - 1];
       const explain = textArray[index + 1];
       text += `    ${explain ? `/** ${explain}  */\n  ` : ''}${key}: ${typeText.at(0)?.toLowerCase() + typeText.slice(1)};\n`;

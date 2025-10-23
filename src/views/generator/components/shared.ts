@@ -208,9 +208,24 @@ export const checkTsData = (formModel: FormModel) => {
   return typeSchema;
 };
 
+/** 后端类型到前端类型转换的映射 */
+export const getTsMapping = () => {
+  const tsMapping = {
+    boolean: 'boolean',
+    string: 'string',
+    number: 'number',
+    BigDecimal: 'string',
+    int: 'number',
+    integer: 'number',
+    long: 'number',
+    date: 'string'
+  } as const;
+  return tsMapping;
+};
+
 /** 文档注字段注释上的生成代码的类型汇总 */
 export const getTypeList = () => {
-  const typeList = ['boolean', 'string', 'number', 'integer'].flatMap(curr => [
+  const typeList = ['boolean', 'string', 'number', 'integer', 'BigDecimal', 'int', 'long', 'date'].flatMap(curr => [
     curr,
     curr.charAt(0).toLocaleUpperCase() + curr.slice(1)
   ]);
