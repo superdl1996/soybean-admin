@@ -167,6 +167,22 @@ const getFlowCode = () => {
           </SpaceView>
         ),
       },
+      {
+        label: '附件',
+        key: 'tab3',
+        children: (
+          <SpaceView style={{ height: '100%' }} disable={!operateCurrent?.id}>
+            <BaseCard bordered type="H2" title="附件">
+              <AnnexTable
+                  deleted={processAuth}
+                  upload={processAuth}
+                  businessId={operateCurrent?.id}
+                  uploadParams={{}}
+               ></AnnexTable>
+            </BaseCard>
+          </SpaceView>
+        )
+      }
     ];
 
     return (
