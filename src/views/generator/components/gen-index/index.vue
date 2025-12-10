@@ -121,7 +121,7 @@ export default (${formatEmptyStr(isMain, `props: TYPES.MainTableProps`)}${format
     },`
   )}
   ${formatEmptyStr(
-    editData && isMainDetails,
+    isMainDetails,
     `details: {
       modalTitle: '查看',
       ${formatEmptyStr(!isMainDetails, `columns: formColumns,`)}
