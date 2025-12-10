@@ -15,6 +15,11 @@ const { formModel } = defineProps<Props>();
 const { copyCode } = useCopy({ templateName: 'baseCodeRef' });
 const code = defineModel<string>('genUseTableColumns');
 
+/** 判断是否为时间类型 */
+const isDateType = (dataIndex: string) => {
+  return dataIndex.endsWith('Date') || dataIndex.endsWith('Datetime');
+};
+
 const generateCode = () => {
   const { listData, startUseData, rowEditData } = getApiData({ formModel });
   const columnsData = generateTsToColumns(formModel);
@@ -26,16 +31,7 @@ const generateCode = () => {
   const addColumnsData: any[] = [];
   const columnsArray: any[] = columnsData.map(item => {
     const { title, dataIndex } = item;
-    if (dataIndex.endsWith('Date') || dataIndex.endsWith('Datetime')) {
-      item.valueType = 'date';
-      addColumnsData.push({
-        title,
-        dataIndex,
-        valueType: 'dateRange',
-        hideInTable: true
-      });
-    }
-    const dictItem =
+    let dictItem =
       title.includes('元') ||
       title.includes('额') ||
       title.includes('费') ||
@@ -43,6 +39,17 @@ const generateCode = () => {
       title.endsWith('量')
         ? { valueType: 'digit' }
         : {};
+
+    if (isDateType(dataIndex)) {
+      dictItem = { valueType: 'date' };
+      addColumnsData.push({
+        title,
+        dataIndex,
+        valueType: 'dateRange',
+        hideInTable: true
+      });
+    }
+
     const genWidthItem = () => {
       const widthItem = { width: 120 };
       const widthMap = new Map([
@@ -58,6 +65,7 @@ const generateCode = () => {
         }
       }
       if (title === '单位') widthItem.width = 80;
+      if (isDateType(dataIndex)) widthItem.width = 100;
       return widthItem;
     };
 
