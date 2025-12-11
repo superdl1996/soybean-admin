@@ -117,6 +117,12 @@ const getFlowCode = () => {
 
     const processParams: ProcessBusinessProps = {
       commitUrl,
+      fieldNames: {
+      //  projectId: '',
+        projectCode: '',
+        businessName: '',
+      //  projectName: '',
+      },
       validateFieldsForms: processValidateFieldsForms,
       fromParams: processBusinessParams,
       onSave: processOnSave,
