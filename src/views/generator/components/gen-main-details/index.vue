@@ -140,18 +140,6 @@ const getFlowCode = () => {
             <BaseSchemaForm {...generateMainForm} />
           </BaseCard>
         </SpaceView>
-        <SpaceView disable={!operateCurrent?.id}>
-          <BaseCard bordered type="H2" title="附件">
-            <section style={{ height: 320 }}>
-              <AnnexTable
-                deleted={processAuth}
-                upload={processAuth}
-                businessId={operateCurrent?.id}
-                params={{}}
-              ></AnnexTable>
-            </section>
-          </BaseCard>
-        </SpaceView>
       </>
     );
 
@@ -312,18 +300,6 @@ const getNormalCode = () => {
         <SpaceView>
           <BaseCard bordered type="H2" title="主单据信息">
             <BaseSchemaForm {...generateMainForm} />
-          </BaseCard>
-        </SpaceView>
-        <SpaceView disable={!operateCurrent?.id}>
-          <BaseCard bordered type="H2" title="附件">
-            <section style={{ height: 320 }}>
-              <AnnexTable
-                deleted={!!formType}
-                upload={!!formType}
-                businessId={operateCurrent?.id}
-                params={{}}
-              ></AnnexTable>
-            </section>
           </BaseCard>
         </SpaceView>
       </>
