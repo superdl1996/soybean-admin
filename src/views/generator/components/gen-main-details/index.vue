@@ -147,7 +147,7 @@ const getFlowCode = () => {
                 deleted={processAuth}
                 upload={processAuth}
                 businessId={operateCurrent?.id}
-                uploadParams={{}}
+                params={{}}
               ></AnnexTable>
             </section>
           </BaseCard>
@@ -185,7 +185,7 @@ const getFlowCode = () => {
                   deleted={processAuth}
                   upload={processAuth}
                   businessId={operateCurrent?.id}
-                  uploadParams={{}}
+                  params={{}}
                ></AnnexTable>
             </BaseCard>
           </SpaceView>
@@ -321,7 +321,7 @@ const getNormalCode = () => {
                 deleted={!!formType}
                 upload={!!formType}
                 businessId={operateCurrent?.id}
-                uploadParams={{}}
+                params={{}}
               ></AnnexTable>
             </section>
           </BaseCard>
@@ -359,7 +359,7 @@ const getNormalCode = () => {
                   deleted={processAuth}
                   upload={processAuth}
                   businessId={operateCurrent?.id}
-                  uploadParams={{}}
+                  params={{}}
                ></AnnexTable>
             </BaseCard>
           </SpaceView>
