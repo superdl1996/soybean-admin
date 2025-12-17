@@ -155,10 +155,10 @@ const getFlowCode = () => {
         children: (
           <SpaceView style={{ height: '100%' }} disable={!operateCurrent?.id}>
             <BaseCard bordered type="H2" title="其他信息">
-              <MyComponent
-                operateCurrent={operateCurrent}
-                processAuth={processAuth}
-              />
+              {/*<MyComponent*/}
+              {/*  operateCurrent={operateCurrent}*/}
+              {/*  processAuth={processAuth}*/}
+              {/*/>*/}
             </BaseCard>
           </SpaceView>
         ),
@@ -317,10 +317,10 @@ const getNormalCode = () => {
         children: (
           <SpaceView style={{ height: '100%' }} disable={!operateCurrent?.id}>
             <BaseCard bordered type="H2" title="其他信息">
-              <MyComponent
-                operateCurrent={operateCurrent}
-                processAuth={processAuth}
-              />
+              {/*<MyComponent*/}
+              {/*  operateCurrent={operateCurrent}*/}
+              {/*  processAuth={processAuth}*/}
+              {/*/>*/}
             </BaseCard>
           </SpaceView>
         ),
