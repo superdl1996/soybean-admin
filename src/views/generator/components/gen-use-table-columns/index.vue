@@ -53,7 +53,7 @@ const generateCode = () => {
     const genWidthItem = () => {
       const widthItem = { width: 120 };
       const widthMap = new Map([
-        [['名称', '特征'], 240],
+        [['名称', '特征', '内容', '说明'], 240],
         [['计量单位', '类型'], 80]
       ]);
 

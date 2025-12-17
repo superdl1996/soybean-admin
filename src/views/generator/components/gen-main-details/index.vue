@@ -83,10 +83,10 @@ const getFlowCode = () => {
     };
 
     /** 保存成功后 回填单据信息 */
-    const handleProcessOnSaveFinish = async (res: FETCH.Row) => {
-      if (res?.status !== 'SUCCESS') return;
+    const handleProcessOnSaveFinish = async (id?: string) => {
+      if (!id) return;
       /** 获取新的主单据 */
-      const queryRes = await businessQueryOne(commitUrl, res?.rows?.id);
+      const queryRes = await businessQueryOne(commitUrl, id);
       const queryResRows = queryRes?.rows
 
       setOperateCurrent({ ...operateCurrent, ...queryResRows });
@@ -101,7 +101,9 @@ const getFlowCode = () => {
       const { workflowKey } = params;
 
       const res = await API.${editData?.apiName}({ ...mainFormValues, id: operateCurrent?.id, workflowKey });
-      handleProcessOnSaveFinish(res);
+       if (res?.status === 'SUCCESS') {
+        handleProcessOnSaveFinish(res?.rows?.id);
+      }
       return res;
     };
 
@@ -266,10 +268,10 @@ const getNormalCode = () => {
     };
 
     /** 保存成功后 回填单据信息  */
-    const handleOnSaveFinish = async (res: FETCH.Row) => {
-      if (res?.status !== 'SUCCESS') return;
+    const handleOnSaveFinish = async (id?: string) => {
+      if (!id) return;
       /** 获取新的主单据 */
-      const queryRes = await businessQueryOne(commitUrl, res?.rows?.id);
+      const queryRes = await businessQueryOne(commitUrl, id);
       const queryResRows = queryRes?.rows;
 
       setOperateCurrent({ ...operateCurrent, ...queryResRows });
@@ -285,9 +287,9 @@ const getNormalCode = () => {
         setSaveLoading(true);
         const res = await API.${editData?.apiName}({ ...mainFormValues, id: operateCurrent?.id });
         if (res?.status === 'SUCCESS') {
+          handleOnSaveFinish(res?.rows?.id);
           message.success(res?.message || '保存成功');
         }
-        handleOnSaveFinish(res);
       } finally {
         setSaveLoading(false);
       }
