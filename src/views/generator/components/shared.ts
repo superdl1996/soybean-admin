@@ -114,8 +114,13 @@ const formatApi = (params: { type?: string; apiUrl: string; formModel: FormModel
 
   // 截取api路径
   const parseApis = [...nameArray];
-  if (parseApis[0].includes('{{')) {
-    parseApis.shift();
+  const parseApisStart = parseApis[0];
+  if (parseApisStart.includes('{{')) {
+    if (parseApisStart.endsWith('}}')) {
+      parseApis.shift();
+    } else {
+      parseApis[0] = parseApis[0].replace(/\{\{.*?\}\}/g, '');
+    }
   }
 
   const parseApisStr = parseApis.join('/');
