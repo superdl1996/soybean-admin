@@ -234,7 +234,7 @@ const getNormalCode = () => {
     const { formType } = props;
 
     /** 流程前缀或查询queryOne前缀 */
-    // const commitUrl = '${formModel.commitUrl}';
+    const commitUrl = '${formModel.commitUrl}';
     /** 非新增取当前行 */
     const formCurrent = props.formType === 1 ? undefined : props.operateCurrent;
     const { formColumns } = useMainFormColumns();
@@ -332,8 +332,8 @@ const getNormalCode = () => {
           <SpaceView style={{ height: '100%' }} disable={!operateCurrent?.id}>
             <BaseCard bordered type="H2" title="附件">
               <AnnexTable
-                  deleted={processAuth}
-                  upload={processAuth}
+                  deleted={true}
+                  upload={true}
                   businessId={operateCurrent?.id}
                   params={{}}
                ></AnnexTable>
