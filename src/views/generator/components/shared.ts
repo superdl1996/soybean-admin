@@ -167,7 +167,7 @@ export const getApiData = (params: { formModel: FormModel }) => {
 
 /** 根据参数返回str */
 export const formatEmptyStr = (data: any, str: string) => {
-  return data ? str : '';
+  return data ? str : '\n';
 };
 
 // --------------Ts类型生成模块---------------------

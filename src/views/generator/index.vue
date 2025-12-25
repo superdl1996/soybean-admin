@@ -119,6 +119,7 @@ const requestGenerate = () => {
   window.$loadingBar?.start();
 
   const { GenMainDetails, ...restCodeModel } = codeModel;
+  // 主单据类型 none-无主单据
   const genCodeModel = searchParams.value.mainDetailsType === 'none' ? restCodeModel : codeModel;
 
   request({

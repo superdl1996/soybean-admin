@@ -79,9 +79,9 @@ export default (${formatEmptyStr(isMain, `props: TYPES.MainTableProps`)}${format
   /** 表格操作按钮配置  */
   const toolbar: TableToolbarDefine = {
   ${formatEmptyStr(
-    editData && !rowEditData,
+    editData,
     `plus: {
-      modalTitle: '新增',
+      modalTitle: '${formModel.moduleName}-新增',
       ${formatEmptyStr(
         !isMainDetails,
         `columns: formColumns,
@@ -97,9 +97,9 @@ export default (${formatEmptyStr(isMain, `props: TYPES.MainTableProps`)}${format
     },`
   )}
   ${formatEmptyStr(
-    editData && !rowEditData,
+    editData,
     `edit: {
-      modalTitle: '编辑',
+      modalTitle: '${formModel.moduleName}-编辑',
       ${formatEmptyStr(
         !isMainDetails,
         `columns: formColumns,
@@ -123,7 +123,7 @@ export default (${formatEmptyStr(isMain, `props: TYPES.MainTableProps`)}${format
   ${formatEmptyStr(
     isMainDetails,
     `details: {
-      modalTitle: '查看',
+      modalTitle: '${formModel.moduleName}-查看',
       ${formatEmptyStr(!isMainDetails, `columns: formColumns,`)}
       ${formatEmptyStr(isMainDetails, `render: <MainDetails operateCurrent={${listData?.currentState[0]}} formType={0} />,`)}
       auth: authButton('details'),
@@ -181,8 +181,6 @@ export default (${formatEmptyStr(isMain, `props: TYPES.MainTableProps`)}${format
     },`
   )}
   };
-
-
  ${formatEmptyStr(
    isFlowDetails,
    `const toolbarAfter = (
@@ -221,7 +219,10 @@ export default (${formatEmptyStr(isMain, `props: TYPES.MainTableProps`)}${format
 };
 `;
 
+  // console.log(CODE);
   code.value = CODE;
+  // .replace(/(\r?\n\s*){2,}/g, '\n\n');
+  // console.log(code.value);
 };
 defineExpose({ name, generateCode, copyCode });
 </script>
