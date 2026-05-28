@@ -123,6 +123,13 @@ defineExpose({
           }"
         >
           <NGrid responsive="screen" item-responsive>
+            <NFormItemGi span="24 s:6 m:6" label="生成表格类型" path="tableType" class="pr-20px">
+              <NRadioGroup v-model:value="model.tableType">
+                <NRadioButton :value="tableTypeMap.DEFAULT">默认</NRadioButton>
+                <NRadioButton :value="tableTypeMap.MAIN">主表</NRadioButton>
+                <NRadioButton :value="tableTypeMap.SUB">副表</NRadioButton>
+              </NRadioGroup>
+            </NFormItemGi>
             <NFormItemGi span="24 s:12 m:6" label="模块名称(中文注释)" path="moduleName" class="pr-20px">
               <NInput v-model:value="model.moduleName" placeholder="用于注释模块名" />
             </NFormItemGi>
@@ -255,13 +262,6 @@ defineExpose({
               <NInput v-model:value="model.typeSchemaCheck" type="textarea" round placeholder="重置生成的ts类型名字" />
             </NFormItemGi>
 
-            <NFormItemGi span="24 s:6 m:6" label="生成表格类型" path="tableType" class="pr-20px">
-              <NRadioGroup v-model:value="model.tableType">
-                <NRadioButton :value="tableTypeMap.DEFAULT">默认</NRadioButton>
-                <NRadioButton :value="tableTypeMap.MAIN">Main</NRadioButton>
-                <NRadioButton :value="tableTypeMap.SUB">Sub</NRadioButton>
-              </NRadioGroup>
-            </NFormItemGi>
             <NFormItemGi span="24 s:6 m:6" label="主单据类型" path="mainDetailsType" class="pr-20px">
               <NRadioGroup v-model:value="model.mainDetailsType">
                 <NRadioButton v-for="item in mainDetailList" :key="item.type" :value="item.type">

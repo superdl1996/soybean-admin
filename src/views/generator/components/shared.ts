@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import type { MainDetailListType } from './gen-form/data';
+import { tableTypeMap } from './gen-form/data';
 
 // --------------公共模块数组---------------------
 
@@ -23,6 +24,8 @@ export interface GenerateAction {
 
 /** 生成条件 */
 export interface FormModel {
+  /** 生成表格类型 main:修改ts类型输出位MainTaleList sub:SubTaleList */
+  tableType: string;
   /** 表格key */
   persistenceKey: string;
   /** 文件名 */
@@ -53,8 +56,6 @@ export interface FormModel {
   tableStartUseApi: string;
   /** 生成ts类型的原始数据 */
   typeSchema: string;
-  /** 生成表格类型 main:修改ts类型输出位MainTaleList sub:SubTaleList */
-  tableType: string;
   /** 校正及补充生成ts类型数据 */
   typeSchemaCheck: string;
   /** TS重命名 */
@@ -235,6 +236,11 @@ export const getTypeList = () => {
     curr.charAt(0).toLocaleUpperCase() + curr.slice(1)
   ]);
   return typeList;
+};
+
+/** 是否为副表 */
+export const isSubTable = (type: string) => {
+  return type === tableTypeMap.SUB;
 };
 
 // --------------Columns模块---------------------

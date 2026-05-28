@@ -141,6 +141,13 @@ export default (${formatEmptyStr(isMain, `props: TYPES.MainTableProps`)}${format
   ${formatEmptyStr(
     importData,
     `import: {
+    ${
+      isSub
+        ? `uploadParams: {
+        businessId: operateCurrent?.id,
+    },`
+        : ``
+    }
       onSubmit: API.${importData?.apiName},
       auth: authButton('import'),
     },`

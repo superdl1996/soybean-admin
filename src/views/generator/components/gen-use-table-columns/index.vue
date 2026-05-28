@@ -51,9 +51,9 @@ const generateCode = () => {
     }
 
     const genWidthItem = () => {
-      const widthItem = { width: 120 };
+      const widthItem = { width: 100 };
       const widthMap = new Map([
-        [['名称', '特征', '内容', '说明'], 240],
+        [['名称', '特征', '内容', '说明'], 200],
         [['计量单位', '类型'], 80]
       ]);
 
@@ -64,8 +64,8 @@ const generateCode = () => {
           }
         }
       }
-      if (title === '单位') widthItem.width = 80;
-      if (isDateType(dataIndex)) widthItem.width = 100;
+      if (title === '单位') widthItem.width = 50;
+      if (isDateType(dataIndex)) widthItem.width = 90;
       return widthItem;
     };
 
@@ -111,7 +111,7 @@ const generateCode = () => {
 
   columnsArray.unshift({
     dataIndex: 'index',
-    width: 60
+    width: 50
   });
 
   const reg = /(},|\[)/g;
@@ -149,7 +149,7 @@ const generateCode = () => {
     columnsJson = columnsJson.replace(
       '{"dataIndex":"index","width":60},',
       `
-    {"dataIndex":"index","width":60},
+    {"dataIndex":"index","width":50},
     {
       title: '操作',
       width: 70,
@@ -169,6 +169,7 @@ const generateCode = () => {
     },
     {
       title: '审批状态',
+      width: 60,
       dataIndex: 'billStatus',
       valueType: 'radioButton',
       valueEnum: ENUMPROCESSSTATUS,
